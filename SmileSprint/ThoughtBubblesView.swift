@@ -11,25 +11,32 @@ struct ThoughtBubble: Identifiable {
     let id = UUID()
     let word: String
     let isPositive: Bool
-    var position: CGPoint = .zero
 }
 
 struct ThoughtBubblesView: View {
     @EnvironmentObject private var model: EmotionalModel
+    @AppStorage("moodValue") private var moodValue: Double = 3.0
     @State private var bubbles: [ThoughtBubble] = []
     @State private var kept: [ThoughtBubble] = []
     @State private var released: [ThoughtBubble] = []
     @State private var navigateToJournal = false
 
-    private let allThoughts = [
-        ("Hope", true), ("Gratitude", true), ("Joy", true),
-        ("Calm", true), ("Confident", true), ("Self-Love", true),
-        ("Resilience", true), ("Patience", true), ("Pride", true),
-        ("Optimism", true),
-        ("Worry", false), ("Stress", false), ("Fear", false),
-        ("Doubt", false), ("Guilt", false), ("Frustration", false),
-        ("Lonely", false), ("Anxious", false), ("Shame", false),
-        ("Anger", false)
+    // MARK: - Emotion Lists
+
+    private let positiveEmotions: [(String, Bool)] = [
+        ("Hope", true), ("Gratitude", true), ("Joy", true), ("Calm", true),
+        ("Confident", true), ("Self-Love", true), ("Resilience", true), ("Patience", true),
+        ("Pride", true), ("Optimism", true), ("Kind", true), ("Motivated", true),
+        ("Peace", true), ("Empathy", true), ("Excited", true), ("Cheerful", true),
+        ("Courage", true), ("Serenity", true), ("Satisfied", true), ("Inspired", true)
+    ]
+
+    private let negativeEmotions: [(String, Bool)] = [
+        ("Worry", false), ("Stress", false), ("Fear", false), ("Doubt", false),
+        ("Guilt", false), ("Frustrated", false), ("Lonely", false), ("Anxious", false),
+        ("Shame", false), ("Anger", false), ("Overthinking", false), ("Sad", false),
+        ("Jealous", false), ("Embarrassed", false), ("Disappointed", false), ("Regret", false),
+        ("Irritated", false), ("Hopeless", false), ("Envy", false), ("Tired", false)
     ]
 
     var body: some View {
@@ -45,7 +52,6 @@ struct ThoughtBubblesView: View {
 
                 GeometryReader { geo in
                     let cols = 4
-                    let rows = 5
                     let spacing: CGFloat = 10
                     let bubbleSize: CGFloat = (geo.size.width - CGFloat(cols + 1) * spacing) / CGFloat(cols)
 
@@ -89,8 +95,28 @@ struct ThoughtBubblesView: View {
         }
     }
 
+    // MARK: - Logic
+
     func generateBubbles() {
-        bubbles = allThoughts.shuffled().map { word, isPositive in
+        let mood = Int(moodValue)
+        let positiveCount: Int
+
+        switch mood {
+        case 1: positiveCount = 0
+        case 2: positiveCount = 5
+        case 3: positiveCount = 10
+        case 4: positiveCount = 15
+        case 5: positiveCount = 20
+        default: positiveCount = 10
+        }
+
+        let negativeCount = 20 - positiveCount
+        let selectedPositives = positiveEmotions.shuffled().prefix(positiveCount)
+        let selectedNegatives = negativeEmotions.shuffled().prefix(negativeCount)
+
+        let selected = (selectedPositives + selectedNegatives).shuffled()
+
+        bubbles = selected.map { word, isPositive in
             ThoughtBubble(word: word, isPositive: isPositive)
         }
     }
