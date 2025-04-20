@@ -1,12 +1,6 @@
-//
-//  JournalingView.swift
-//  SmileSprint
-//
-//  Created by Gaurav Jena on 4/19/25.
-//
-
 import SwiftUI
 import NaturalLanguage
+
 
 struct JournalingView: View {
     @State private var text = ""
@@ -33,8 +27,8 @@ struct JournalingView: View {
                     .padding()
             }
 
-            NavigationLink("Continue to Quotes") {
-                QuoteSwipeView()
+            NavigationLink("Finish & Go Home") {
+                HomeView()  // ✅ This is your tabbed interface
             }
             .buttonStyle(.borderedProminent)
 
@@ -46,13 +40,8 @@ struct JournalingView: View {
     func analyzeSentiment(from text: String) -> String {
         let tagger = NLTagger(tagSchemes: [.sentimentScore])
         tagger.string = text
-        let (sentiment, _) = tagger.tag(at: text.startIndex,
-                                        unit: .paragraph,
-                                        scheme: .sentimentScore)
-        guard let score = sentiment?.rawValue, let value = Double(score) else {
-            return "Neutral"
-        }
-
+        let (sentiment, _) = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
+        guard let score = sentiment?.rawValue, let value = Double(score) else { return "Neutral" }
         if value > 0.3 { return "Positive 😊" }
         else if value < -0.3 { return "Negative 😞" }
         else { return "Neutral 😐" }
