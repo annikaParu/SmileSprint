@@ -23,12 +23,12 @@ struct ThoughtBubblesView: View {
 
     private let allThoughts = [
         ("Hope", true), ("Gratitude", true), ("Joy", true),
-        ("Calm", true), ("Confidence", true), ("Self-Love", true),
+        ("Calm", true), ("Confident", true), ("Self-Love", true),
         ("Resilience", true), ("Patience", true), ("Pride", true),
         ("Optimism", true),
         ("Worry", false), ("Stress", false), ("Fear", false),
         ("Doubt", false), ("Guilt", false), ("Frustration", false),
-        ("Loneliness", false), ("Anxious", false), ("Shame", false),
+        ("Lonely", false), ("Anxious", false), ("Shame", false),
         ("Anger", false)
     ]
 
