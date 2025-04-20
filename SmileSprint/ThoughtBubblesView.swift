@@ -19,7 +19,7 @@ struct ThoughtBubblesView: View {
     @State private var bubbles: [ThoughtBubble] = []
     @State private var kept: [ThoughtBubble] = []
     @State private var released: [ThoughtBubble] = []
-    @State private var navigateToJournal = false
+    @State private var navigateToHome = false
 
     // MARK: - Emotion Lists
 
@@ -75,14 +75,14 @@ struct ThoughtBubblesView: View {
                 if kept.count + released.count >= 20 {
                     NavigationLink(
                         destination: JournalingView(),
-                        isActive: $navigateToJournal
+                        isActive: $navigateToHome
                     ) {
                         EmptyView()
                     }
                     .hidden()
 
                     Button("Reflect & Continue") {
-                        navigateToJournal = true
+                        navigateToHome = true
                     }
                     .buttonStyle(.borderedProminent)
                 }
@@ -126,7 +126,7 @@ struct ThoughtBubblesView: View {
             kept.append(bubble)
         } else {
             released.append(bubble)
+            bubbles.removeAll { $0.id == bubble.id }
         }
-        bubbles.removeAll { $0.id == bubble.id }
     }
 }
