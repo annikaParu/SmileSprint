@@ -30,7 +30,7 @@ struct QuoteCard: View {
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 25)
-                .fill(Color(.systemMint))
+                .fill(Color(red: 1.0, green: 0.95, blue: 0.85))
                 .shadow(radius: 6)
         )
         .overlay(
@@ -52,21 +52,35 @@ struct QuoteSwipeView: View {
     private let quotes = QuoteManager.samples
 
     var body: some View {
-        TabView(selection: $index) {
-            ForEach(quotes.indices, id: \.self) { i in
-                let q = quotes[i]
-                QuoteCard(quote: q, liked: model.likedQuoteIDs.contains(q.id))
-                    .tag(i)
-                    .onTapGesture { model.toggleLike(q) }
+        ZStack {
+            // NEW BACKGROUND
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 0.85, green: 1.0, blue: 0.8),   // soft pastel green
+                    Color(red: 1.0, green: 0.85, blue: 0.6)    // warm peach/orange
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+
+            // Quote Swiper
+            TabView(selection: $index) {
+                ForEach(quotes.indices, id: \.self) { i in
+                    let q = quotes[i]
+                    QuoteCard(quote: q, liked: model.likedQuoteIDs.contains(q.id))
+                        .tag(i)
+                        .onTapGesture { model.toggleLike(q) }
+                }
             }
-        }
-        .tabViewStyle(.page(indexDisplayMode: .always))
-        .navigationTitle("Pick Quotes You ❤️")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Save Poster") {
-                    let img = renderPoster(for: quotes[index])
-                    save(img)
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .navigationTitle("Pick Quotes You ❤️")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Save Poster") {
+                        let img = renderPoster(for: quotes[index])
+                        save(img)
+                    }
                 }
             }
         }
