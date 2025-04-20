@@ -11,7 +11,7 @@ struct ThoughtBubble: Identifiable {
     let id = UUID()
     let word: String
     let isPositive: Bool
-    var offset: CGSize = .zero
+    var position: CGPoint = .zero
 }
 
 struct ThoughtBubblesView: View {
@@ -23,9 +23,13 @@ struct ThoughtBubblesView: View {
 
     private let allThoughts = [
         ("Hope", true), ("Gratitude", true), ("Joy", true),
-        ("Calm", true), ("Confidence", true), ("Worry", false),
-        ("Stress", false), ("Fear", false), ("Doubt", false),
-        ("Guilt", false), ("Frustration", false)
+        ("Calm", true), ("Confident", true), ("Self-Love", true),
+        ("Resilience", true), ("Patience", true), ("Pride", true),
+        ("Optimism", true),
+        ("Worry", false), ("Stress", false), ("Fear", false),
+        ("Doubt", false), ("Guilt", false), ("Frustration", false),
+        ("Lonely", false), ("Anxious", false), ("Shame", false),
+        ("Anger", false)
     ]
 
     var body: some View {
@@ -39,23 +43,30 @@ struct ThoughtBubblesView: View {
                     .font(.headline)
                     .padding()
 
-                ZStack {
-                    ForEach(bubbles) { bubble in
-                        Text(bubble.word)
-                            .font(.headline)
-                            .padding(12)
-                            .background(bubble.isPositive ? Color.green.opacity(0.7) : Color.red.opacity(0.6))
-                            .clipShape(Circle())
-                            .foregroundColor(.white)
-                            .offset(bubble.offset)
-                            .onTapGesture {
-                                handleTap(bubble)
-                            }
-                    }
-                }
-                .frame(height: 400)
+                GeometryReader { geo in
+                    let cols = 4
+                    let rows = 5
+                    let spacing: CGFloat = 10
+                    let bubbleSize: CGFloat = (geo.size.width - CGFloat(cols + 1) * spacing) / CGFloat(cols)
 
-                if kept.count + released.count >= 8 {
+                    LazyVGrid(columns: Array(repeating: GridItem(.fixed(bubbleSize), spacing: spacing), count: cols), spacing: spacing) {
+                        ForEach(bubbles) { bubble in
+                            Text(bubble.word)
+                                .font(.headline)
+                                .frame(width: bubbleSize, height: bubbleSize)
+                                .background(bubble.isPositive ? Color.green.opacity(0.7) : Color.red.opacity(0.6))
+                                .clipShape(Circle())
+                                .foregroundColor(.white)
+                                .onTapGesture {
+                                    handleTap(bubble)
+                                }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(maxHeight: .infinity)
+
+                if kept.count + released.count >= 20 {
                     NavigationLink(
                         destination: JournalingView(),
                         isActive: $navigateToJournal
@@ -70,7 +81,6 @@ struct ThoughtBubblesView: View {
                     .buttonStyle(.borderedProminent)
                 }
 
-
                 Spacer()
             }
         }
@@ -80,10 +90,8 @@ struct ThoughtBubblesView: View {
     }
 
     func generateBubbles() {
-        var selected = allThoughts.shuffled().prefix(8)
-        bubbles = selected.map { word, isPositive in
-            ThoughtBubble(word: word, isPositive: isPositive,
-                          offset: CGSize(width: Double.random(in: -120...120), height: Double.random(in: -150...150)))
+        bubbles = allThoughts.shuffled().map { word, isPositive in
+            ThoughtBubble(word: word, isPositive: isPositive)
         }
     }
 
