@@ -1,3 +1,10 @@
+//
+//  MoodCheckView.swift
+//  SmileSprint
+//
+//  Created by Gaurav Jena on 4/19/25.
+//
+
 import SwiftUI
 
 struct MoodCheckView: View {
@@ -5,7 +12,7 @@ struct MoodCheckView: View {
 
     var body: some View {
         VStack(spacing: 30) {
-            Text("How are you feeling today?")
+            Text("How are you feeling?")
                 .font(.title2.bold())
 
             Slider(value: $moodValue, in: 1...5, step: 1)
@@ -16,7 +23,7 @@ struct MoodCheckView: View {
                 .font(.system(size: 64))
 
             NavigationLink("Next") {
-                GameView()
+                ThoughtBubblesView()
             }
             .buttonStyle(.borderedProminent)
 

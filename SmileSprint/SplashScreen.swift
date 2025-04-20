@@ -26,7 +26,7 @@ struct SplashScreen: View {
                     .scaleEffect(fadeIn ? 1 : 0.6)
                     .animation(.easeOut(duration: 1.2), value: fadeIn)
 
-                Text("SmileSprint")
+                Text("Smile Sprint")
                     .font(.largeTitle.bold())
                     .foregroundColor(.white)
                     .opacity(fadeIn ? 1 : 0)
